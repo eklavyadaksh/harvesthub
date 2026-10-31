@@ -1,0 +1,28 @@
+h2 {
+  font-weight: 600;
+}
+
+.card {
+  height: 100%;
+  border-radius: 10px;
+}
+
+.card-title {
+  font-weight: 600;
+}
+
+.card-text {
+  margin-bottom: 8px;
+}
+
+.form-label {
+  font-weight: 500;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.btn {
+  margin-top: 5px;
+}

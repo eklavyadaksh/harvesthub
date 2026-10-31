@@ -1,0 +1,209 @@
+<div class="section-header">
+  <div class="section-header-left">
+    <div class="section-icon"><i class="bi bi-gear-wide-connected"></i></div>
+    <div>
+      <h2>Field Operations</h2>
+      <p class="section-subtitle">Record and audit agronomic tasks: ploughing, sowing, irrigation, spraying & harvesting</p>
+    </div>
+  </div>
+  <span class="section-count-badge">
+    <i class="bi bi-clock-history"></i> {{ fieldOperations.length }} {{ fieldOperations.length === 1 ? 'Activity' : 'Activities' }}
+  </span>
+</div>
+
+<!-- Add Field Operation Form -->
+<div class="hh-form-card">
+  <div class="hh-form-title">
+    <i class="bi bi-plus-circle-fill text-purple" style="color: var(--ops-primary);"></i> Log Field Activity
+  </div>
+  <form (ngSubmit)="addFieldOperation()">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Target Field / Plot</label>
+        <select class="form-select" [(ngModel)]="newOperation.field" name="field" required>
+          <option [ngValue]="null" disabled>Select Field</option>
+          <option *ngFor="let field of fields" [ngValue]="field">
+            {{ field.name }} ({{ field.farm?.name }})
+          </option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Deployed Machinery (Optional)</label>
+        <select class="form-select" [(ngModel)]="newOperation.equipment" name="equipment">
+          <option [ngValue]="null">No Machinery (Manual Labor)</option>
+          <option *ngFor="let equipment of equipmentList" [ngValue]="equipment">
+            {{ equipment.name }} ({{ equipment.type }})
+          </option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Operation Type</label>
+        <select class="form-select" [(ngModel)]="newOperation.operationType" name="operationType" required>
+          <option value="" disabled>Select Activity Type</option>
+          <option value="Ploughing">Ploughing (Land Preparation)</option>
+          <option value="Sowing">Sowing / Seeding</option>
+          <option value="Irrigation">Irrigation / Water Management</option>
+          <option value="Fertilizing">Fertilizing / Nutrient Addition</option>
+          <option value="Pesticide Application">Pesticide / Crop Protection</option>
+          <option value="Harvesting">Harvesting</option>
+        </select>
+      </div>
+    </div>
+    <div class="row g-3 mt-1">
+      <div class="col-md-4">
+        <label class="form-label">Execution Date</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-calendar3"></i></span>
+          <input
+            type="date"
+            class="form-control border-start-0"
+            [(ngModel)]="newOperation.operationDate"
+            name="operationDate"
+            required>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Cost Incurred (₹)</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-currency-rupee"></i></span>
+          <input
+            type="number"
+            class="form-control border-start-0"
+            [(ngModel)]="newOperation.cost"
+            name="cost"
+            placeholder="0"
+            min="0"
+            required>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Operation Notes / Description</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="newOperation.description"
+          name="description"
+          placeholder="e.g. 50kg NPK applied, tractor 3 hrs">
+      </div>
+    </div>
+    <div class="mt-3">
+      <button type="submit" class="btn-hh-primary">
+        <i class="bi bi-plus-lg"></i> Log Activity
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Edit Field Operation -->
+<div class="hh-form-card" *ngIf="editingOperation" style="border-left: 4px solid var(--ops-primary); background: #faf9ff;">
+  <div class="hh-form-title" style="color: var(--ops-primary);">
+    <i class="bi bi-pencil-square"></i> Edit Operation Log #{{ editingOperation.operationId }}
+  </div>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <label class="form-label">Field</label>
+      <select class="form-select" [(ngModel)]="editingOperation.field" name="editField">
+        <option *ngFor="let field of fields" [ngValue]="field">
+          {{ field.name }} ({{ field.farm?.name }})
+        </option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Machinery</label>
+      <select class="form-select" [(ngModel)]="editingOperation.equipment" name="editEquipment">
+        <option [ngValue]="null">No Machinery</option>
+        <option *ngFor="let equipment of equipmentList" [ngValue]="equipment">
+          {{ equipment.name }} ({{ equipment.type }})
+        </option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Activity Type</label>
+      <select class="form-select" [(ngModel)]="editingOperation.operationType">
+        <option value="Ploughing">Ploughing</option>
+        <option value="Sowing">Sowing</option>
+        <option value="Irrigation">Irrigation</option>
+        <option value="Fertilizing">Fertilizing</option>
+        <option value="Pesticide Application">Pesticide Application</option>
+        <option value="Harvesting">Harvesting</option>
+      </select>
+    </div>
+  </div>
+  <div class="row g-3 mt-1">
+    <div class="col-md-4">
+      <label class="form-label">Date</label>
+      <input type="date" class="form-control" [(ngModel)]="editingOperation.operationDate">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Cost (₹)</label>
+      <input type="number" class="form-control" [(ngModel)]="editingOperation.cost" min="0">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Notes</label>
+      <input type="text" class="form-control" [(ngModel)]="editingOperation.description">
+    </div>
+  </div>
+  <div class="d-flex gap-2 mt-3">
+    <button class="btn-hh-primary" (click)="updateFieldOperation()">
+      <i class="bi bi-check2"></i> Save Changes
+    </button>
+    <button class="btn-hh-secondary" (click)="cancelEdit()">
+      Cancel
+    </button>
+  </div>
+</div>
+
+<!-- Empty State -->
+<div *ngIf="fieldOperations.length === 0" class="hh-empty">
+  <i class="bi bi-gear-wide-connected"></i>
+  <p>No agricultural activities logged yet. Track field tasks, equipment usage, and input expenses above.</p>
+</div>
+
+<!-- Operations Grid -->
+<div class="hh-grid">
+  <div *ngFor="let operation of fieldOperations" class="hh-card">
+    <div>
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <div class="hh-card-title mb-0">
+          {{ operation.operationType || 'Activity #' + operation.operationId }}
+        </div>
+        <span class="hh-badge" style="background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe;">
+          ₹{{ operation.cost | number }}
+        </span>
+      </div>
+
+      <div class="hh-card-meta">
+        <i class="bi bi-grid-3x3-gap text-purple" style="color: var(--ops-primary);"></i>
+        <span>Plot: <strong>{{ operation.field?.name }}</strong> ({{ operation.field?.farm?.name }})</span>
+      </div>
+
+      <div class="hh-card-meta">
+        <i class="bi bi-truck text-purple" style="color: var(--ops-primary);"></i>
+        <span>Fleet: <strong>{{ operation.equipment?.name || 'Manual (No machinery)' }}</strong></span>
+      </div>
+
+      <div class="hh-card-meta">
+        <i class="bi bi-calendar3 text-purple" style="color: var(--ops-primary);"></i>
+        <span>Date: {{ operation.operationDate }}</span>
+      </div>
+
+      <div class="hh-card-meta" *ngIf="operation.description">
+        <i class="bi bi-card-text text-purple" style="color: var(--ops-primary);"></i>
+        <span class="text-truncate">{{ operation.description }}</span>
+      </div>
+
+      <div class="hh-card-meta" style="color: var(--hh-text-subtle); font-family: var(--font-mono); font-size: 0.76rem;">
+        <i class="bi bi-fingerprint"></i> ID: HH-OPS-{{ operation.operationId }}
+      </div>
+    </div>
+
+    <div class="hh-card-actions">
+      <button class="btn-hh-edit" (click)="editFieldOperation(operation)">
+        <i class="bi bi-pencil"></i> Edit
+      </button>
+      <button class="btn-hh-danger" (click)="deleteFieldOperation(operation.operationId)">
+        <i class="bi bi-trash3"></i> Delete
+      </button>
+    </div>
+  </div>
+</div>

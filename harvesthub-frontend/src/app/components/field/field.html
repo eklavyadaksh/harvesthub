@@ -1,0 +1,160 @@
+<div class="section-header">
+  <div class="section-header-left">
+    <div class="section-icon"><i class="bi bi-grid-3x3-gap-fill"></i></div>
+    <div>
+      <h2>Field Management</h2>
+      <p class="section-subtitle">Subdivide farms into managed plots, soil zones, and cultivated parcels</p>
+    </div>
+  </div>
+  <span class="section-count-badge">
+    <i class="bi bi-bounding-box"></i> {{ fields.length }} Active {{ fields.length === 1 ? 'Plot' : 'Plots' }}
+  </span>
+</div>
+
+<!-- Add Field Form -->
+<div class="hh-form-card">
+  <div class="hh-form-title">
+    <i class="bi bi-plus-circle-fill text-warning"></i> Add Field / Parcel
+  </div>
+  <form (ngSubmit)="addField()">
+    <div class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label">Parent Farm</label>
+        <select class="form-select" [(ngModel)]="newField.farm" name="farm" required>
+          <option [ngValue]="null" disabled>Choose Farm</option>
+          <option *ngFor="let farm of farms" [ngValue]="farm">
+            {{ farm.name || 'Farm #' + farm.farmId }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Field / Plot Name</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-grid"></i></span>
+          <input
+            type="text"
+            class="form-control border-start-0"
+            [(ngModel)]="newField.name"
+            name="name"
+            placeholder="e.g. North Plot B"
+            required>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Zone / Location</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-compass"></i></span>
+          <input
+            type="text"
+            class="form-control border-start-0"
+            [(ngModel)]="newField.location"
+            name="location"
+            placeholder="e.g. East Boundary"
+            required>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Area (Acres)</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-rulers"></i></span>
+          <input
+            type="number"
+            class="form-control border-start-0"
+            [(ngModel)]="newField.area"
+            name="area"
+            placeholder="0.00"
+            min="0"
+            step="0.1"
+            required>
+        </div>
+      </div>
+    </div>
+    <div class="mt-3">
+      <button type="submit" class="btn-hh-primary">
+        <i class="bi bi-plus-lg"></i> Allocate Field
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Edit Field -->
+<div class="hh-form-card" *ngIf="editingField" style="border-left: 4px solid var(--field-primary); background: #fffdf7;">
+  <div class="hh-form-title" style="color: var(--field-primary);">
+    <i class="bi bi-pencil-square"></i> Edit Field Parcel #{{ editingField.fieldId }}
+  </div>
+  <div class="row g-3">
+    <div class="col-md-3">
+      <label class="form-label">Parent Farm</label>
+      <select class="form-select" [(ngModel)]="editingField.farm" name="editFarm">
+        <option *ngFor="let farm of farms" [ngValue]="farm">
+          {{ farm.name || 'Farm #' + farm.farmId }}
+        </option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Field Name</label>
+      <input type="text" class="form-control" [(ngModel)]="editingField.name">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Location</label>
+      <input type="text" class="form-control" [(ngModel)]="editingField.location">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Area (Acres)</label>
+      <input type="number" class="form-control" [(ngModel)]="editingField.area" min="0" step="0.1">
+    </div>
+  </div>
+  <div class="d-flex gap-2 mt-3">
+    <button class="btn-hh-primary" (click)="updateField()">
+      <i class="bi bi-check2"></i> Save Changes
+    </button>
+    <button class="btn-hh-secondary" (click)="cancelEdit()">
+      Cancel
+    </button>
+  </div>
+</div>
+
+<!-- Empty State -->
+<div *ngIf="fields.length === 0" class="hh-empty">
+  <i class="bi bi-grid-3x3-gap"></i>
+  <p>No field plots created yet. Allocate your first parcel using the form above.</p>
+</div>
+
+<!-- Fields Grid -->
+<div class="hh-grid">
+  <div *ngFor="let field of fields" class="hh-card">
+    <div>
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <div class="hh-card-title mb-0">
+          {{ field.name && field.name.trim() !== '' ? field.name : 'Field #' + field.fieldId }}
+        </div>
+        <span class="hh-badge" style="background: #fffbeb; color: #b45309; border: 1px solid #fde68a;">
+          {{ field.area }} ac
+        </span>
+      </div>
+
+      <div class="hh-card-meta">
+        <i class="bi bi-house-door text-warning"></i>
+        <span>Estate: <strong>{{ field.farm?.name || 'Farm #' + field.farm?.farmId }}</strong></span>
+      </div>
+
+      <div class="hh-card-meta">
+        <i class="bi bi-compass text-warning"></i>
+        <span>Location: {{ field.location || 'Not set' }}</span>
+      </div>
+
+      <div class="hh-card-meta" style="color: var(--hh-text-subtle); font-family: var(--font-mono); font-size: 0.76rem;">
+        <i class="bi bi-fingerprint"></i> ID: HH-FLD-{{ field.fieldId }}
+      </div>
+    </div>
+
+    <div class="hh-card-actions">
+      <button class="btn-hh-edit" (click)="editField(field)">
+        <i class="bi bi-pencil"></i> Edit
+      </button>
+      <button class="btn-hh-danger" (click)="deleteField(field.fieldId)">
+        <i class="bi bi-trash3"></i> Delete
+      </button>
+    </div>
+  </div>
+</div>

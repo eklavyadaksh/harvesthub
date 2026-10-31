@@ -1,0 +1,184 @@
+<div class="section-header">
+  <div class="section-header-left">
+    <div class="section-icon"><i class="bi bi-wrench-adjustable"></i></div>
+    <div>
+      <h2>Machinery Maintenance</h2>
+      <p class="section-subtitle">Schedule servicing, track preventative maintenance, parts replacement and upkeep costs</p>
+    </div>
+  </div>
+  <span class="section-count-badge">
+    <i class="bi bi-tools"></i> {{ maintenanceList.length }} Service {{ maintenanceList.length === 1 ? 'Record' : 'Records' }}
+  </span>
+</div>
+
+<!-- Add Maintenance Form -->
+<div class="hh-form-card">
+  <div class="hh-form-title">
+    <i class="bi bi-plus-circle-fill text-danger"></i> Schedule Maintenance / Repair
+  </div>
+  <form (ngSubmit)="addMaintenance()">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Select Equipment</label>
+        <select class="form-select" [(ngModel)]="newMaintenance.equipment" name="equipment" required>
+          <option [ngValue]="null" disabled>Choose Equipment</option>
+          <option *ngFor="let equipment of equipmentList" [ngValue]="equipment">
+            {{ equipment.name }} ({{ equipment.type }})
+          </option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Service Date</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-calendar-event"></i></span>
+          <input
+            type="date"
+            class="form-control border-start-0"
+            [(ngModel)]="newMaintenance.maintenanceDate"
+            name="maintenanceDate"
+            required>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Next Scheduled Service Date</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-calendar-plus"></i></span>
+          <input
+            type="date"
+            class="form-control border-start-0"
+            [(ngModel)]="newMaintenance.nextDate"
+            name="nextDate"
+            required>
+        </div>
+      </div>
+    </div>
+    <div class="row g-3 mt-1">
+      <div class="col-md-4">
+        <label class="form-label">Service Cost (₹)</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-currency-rupee"></i></span>
+          <input
+            type="number"
+            class="form-control border-start-0"
+            [(ngModel)]="newMaintenance.cost"
+            name="cost"
+            placeholder="0"
+            min="0"
+            required>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <label class="form-label">Service Description / Repaired Components</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="newMaintenance.description"
+          name="description"
+          placeholder="e.g. Engine oil change, hydraulic filter replacement">
+      </div>
+    </div>
+    <div class="mt-3">
+      <button type="submit" class="btn-hh-primary">
+        <i class="bi bi-plus-lg"></i> Record Maintenance
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Edit Maintenance -->
+<div class="hh-form-card" *ngIf="editingMaintenance" style="border-left: 4px solid var(--maint-primary); background: #fffafb;">
+  <div class="hh-form-title" style="color: var(--maint-primary);">
+    <i class="bi bi-pencil-square"></i> Edit Maintenance Record #{{ editingMaintenance.maintenanceId }}
+  </div>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <label class="form-label">Equipment</label>
+      <select class="form-select" [(ngModel)]="editingMaintenance.equipment" name="editEquipment">
+        <option *ngFor="let equipment of equipmentList" [ngValue]="equipment">
+          {{ equipment.name }} ({{ equipment.type }})
+        </option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Service Date</label>
+      <input type="date" class="form-control" [(ngModel)]="editingMaintenance.maintenanceDate">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Next Date</label>
+      <input type="date" class="form-control" [(ngModel)]="editingMaintenance.nextDate">
+    </div>
+  </div>
+  <div class="row g-3 mt-1">
+    <div class="col-md-4">
+      <label class="form-label">Cost (₹)</label>
+      <input type="number" class="form-control" [(ngModel)]="editingMaintenance.cost" min="0">
+    </div>
+    <div class="col-md-8">
+      <label class="form-label">Description</label>
+      <input type="text" class="form-control" [(ngModel)]="editingMaintenance.description">
+    </div>
+  </div>
+  <div class="d-flex gap-2 mt-3">
+    <button class="btn-hh-primary" (click)="updateMaintenance()">
+      <i class="bi bi-check2"></i> Save Changes
+    </button>
+    <button class="btn-hh-secondary" (click)="cancelEdit()">
+      Cancel
+    </button>
+  </div>
+</div>
+
+<!-- Empty State -->
+<div *ngIf="maintenanceList.length === 0" class="hh-empty">
+  <i class="bi bi-wrench-adjustable"></i>
+  <p>No machinery servicing records found. Prevent breakdowns by scheduling periodic maintenance above.</p>
+</div>
+
+<!-- Maintenance Grid -->
+<div class="hh-grid">
+  <div *ngFor="let maintenance of maintenanceList" class="hh-card">
+    <div>
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <div class="hh-card-title mb-0">
+          {{ maintenance.equipment?.name || 'Equipment #' + maintenance.equipment?.equipmentId }}
+        </div>
+        <span class="hh-badge" style="background: #fff1f2; color: #be123c; border: 1px solid #fecdd3;">
+          ₹{{ maintenance.cost | number }}
+        </span>
+      </div>
+
+      <div class="hh-card-meta">
+        <i class="bi bi-tag text-danger"></i>
+        <span>Type: <strong>{{ maintenance.equipment?.type }}</strong></span>
+      </div>
+
+      <div class="hh-card-meta">
+        <i class="bi bi-check-circle text-danger"></i>
+        <span>Serviced: {{ maintenance.maintenanceDate }}</span>
+      </div>
+
+      <div class="hh-card-meta">
+        <i class="bi bi-calendar-plus text-danger"></i>
+        <span>Next Due: <strong>{{ maintenance.nextDate }}</strong></span>
+      </div>
+
+      <div class="hh-card-meta" *ngIf="maintenance.description">
+        <i class="bi bi-card-text text-danger"></i>
+        <span class="text-truncate">{{ maintenance.description }}</span>
+      </div>
+
+      <div class="hh-card-meta" style="color: var(--hh-text-subtle); font-family: var(--font-mono); font-size: 0.76rem;">
+        <i class="bi bi-fingerprint"></i> ID: HH-MNT-{{ maintenance.maintenanceId }}
+      </div>
+    </div>
+
+    <div class="hh-card-actions">
+      <button class="btn-hh-edit" (click)="editMaintenance(maintenance)">
+        <i class="bi bi-pencil"></i> Edit
+      </button>
+      <button class="btn-hh-danger" (click)="deleteMaintenance(maintenance.maintenanceId)">
+        <i class="bi bi-trash3"></i> Delete
+      </button>
+    </div>
+  </div>
+</div>

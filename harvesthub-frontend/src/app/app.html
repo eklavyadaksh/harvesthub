@@ -1,0 +1,391 @@
+<!-- ─── Sidebar Navigation ────────────────────────────────────────── -->
+<aside class="hh-sidebar" [class.collapsed]="sidebarCollapsed" [class.mobile-open]="mobileMenuOpen">
+
+  <!-- Brand Section -->
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <i class="bi bi-tree-fill"></i>
+    </div>
+    <div class="brand-info" *ngIf="!sidebarCollapsed">
+      <div class="brand-title">Harvest<strong>Hub</strong></div>
+      <div class="brand-tagline">Agronomy & Fleet OS</div>
+    </div>
+  </div>
+
+  <!-- Navigation Menu -->
+  <nav class="sidebar-nav">
+    <div class="nav-group-label" *ngIf="!sidebarCollapsed">OPERATIONS & ASSETS</div>
+
+    <a
+      *ngFor="let item of navSections"
+      class="nav-link"
+      [class.active]="activeSection === item.id"
+      (click)="selectSection(item.id)"
+      [title]="item.label + ' — ' + item.desc">
+      
+      <div class="nav-icon-wrap" [style.background]="activeSection === item.id ? item.color : 'transparent'">
+        <i class="bi" [ngClass]="item.icon" [style.color]="activeSection === item.id ? '#ffffff' : item.color"></i>
+      </div>
+
+      <div class="nav-text-block" *ngIf="!sidebarCollapsed">
+        <span class="nav-label">{{ item.label }}</span>
+        <span class="nav-subdesc">{{ item.desc }}</span>
+      </div>
+
+      <!-- Quick Count Badge -->
+      <span
+        class="nav-counter"
+        *ngIf="!sidebarCollapsed && getStatCount(item.id) !== ''">
+        {{ getStatCount(item.id) }}
+      </span>
+
+      <!-- Active Indicator Dot -->
+      <span
+        class="nav-active-pill"
+        *ngIf="activeSection === item.id"
+        [style.background]="item.color"></span>
+    </a>
+  </nav>
+
+  <!-- Agronomic Advisory Footer -->
+  <div class="sidebar-footer" *ngIf="!sidebarCollapsed">
+    <div class="footer-card">
+      <div class="footer-card-header">
+        <i class="bi bi-shield-check text-success"></i>
+        <span>Active Season</span>
+      </div>
+      <div class="footer-card-val">{{ currentAgronomicSeason }}</div>
+      <div class="footer-card-sub">Monitored via HarvestHub 2.0</div>
+    </div>
+    <div class="footer-meta">
+      <span>© {{ currentYear }} HarvestHub Inc.</span>
+    </div>
+  </div>
+</aside>
+
+<!-- Mobile Backdrop -->
+<div class="mobile-backdrop" *ngIf="mobileMenuOpen" (click)="toggleMobileMenu()"></div>
+
+<!-- Desktop Sidebar Toggle Button -->
+<button
+  class="sidebar-toggle-btn d-none d-lg-flex"
+  (click)="toggleSidebar()"
+  [class.shifted]="!sidebarCollapsed"
+  title="Toggle Sidebar (Width)">
+  <i class="bi" [ngClass]="sidebarCollapsed ? 'bi-chevron-right' : 'bi-chevron-left'"></i>
+</button>
+
+<!-- ─── Main Content Shell ──────────────────────────────────────── -->
+<main class="hh-main" [class.expanded]="sidebarCollapsed">
+
+  <!-- Sticky Topbar Navigation Bar -->
+  <header class="hh-topbar">
+    <div class="topbar-left">
+      <!-- Mobile menu trigger -->
+      <button class="mobile-toggle-btn d-lg-none" (click)="toggleMobileMenu()" title="Open Menu">
+        <i class="bi bi-list"></i>
+      </button>
+
+      <div>
+        <div class="topbar-greeting">
+          <span class="greeting-badge">
+            <span class="pulse-dot"></span> Active Operations
+          </span>
+          <span class="topbar-season d-none d-md-inline-flex">
+            <i class="bi bi-cloud-sun"></i> {{ currentAgronomicSeason }}
+          </span>
+        </div>
+        <h1 class="topbar-title">Farm Command Center</h1>
+      </div>
+    </div>
+
+    <!-- Topbar Actions & Controls -->
+    <div class="topbar-right">
+      <!-- Weather & Soil Metric Pill -->
+      <div class="topbar-weather-pill d-none d-xl-flex">
+        <i class="bi bi-thermometer-sun"></i>
+        <span>26°C Sunny</span>
+        <span class="weather-sep">•</span>
+        <i class="bi bi-droplet-half"></i>
+        <span>Moisture 68%</span>
+      </div>
+
+      <!-- View Mode Switcher -->
+      <div class="view-mode-toggle" title="Switch layout mode">
+        <button
+          class="mode-btn"
+          [class.active]="viewMode === 'all'"
+          (click)="setViewMode('all')">
+          <i class="bi bi-view-stacked"></i>
+          <span class="d-none d-sm-inline">All Sections</span>
+        </button>
+        <button
+          class="mode-btn"
+          [class.active]="viewMode === 'single'"
+          (click)="setViewMode('single')">
+          <i class="bi bi-window"></i>
+          <span class="d-none d-sm-inline">Single Focus</span>
+        </button>
+      </div>
+
+      <!-- Date Badge -->
+      <div class="topbar-date-badge d-none d-md-flex">
+        <i class="bi bi-calendar3"></i>
+        <span>{{ currentDateStr }}</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Quick-Jump Horizontal Pills Bar -->
+  <nav class="quick-nav-bar">
+    <div class="quick-nav-inner">
+      <button
+        *ngFor="let s of navSections"
+        class="quick-pill-btn"
+        [class.active]="activeSection === s.id"
+        (click)="selectSection(s.id)">
+        <i class="bi" [ngClass]="s.icon" [style.color]="s.color"></i>
+        <span>{{ s.label }}</span>
+        <span class="pill-count" *ngIf="getStatCount(s.id) !== ''">{{ getStatCount(s.id) }}</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ─── Page Content Wrapper ──────────────────────────────────── -->
+  <div class="content-wrapper">
+
+    <!-- ── 0. OVERVIEW & KPI DASHBOARD ── -->
+    <section
+      id="overview"
+      class="content-section section-overview"
+      *ngIf="viewMode === 'all' || activeSection === 'overview'">
+
+      <div class="overview-banner">
+        <div class="banner-content">
+          <div class="banner-tag">EXECUTIVE SUMMARY</div>
+          <h2>Welcome to HarvestHub Control Center</h2>
+          <p>
+            Real-time management of properties, land parcels, machinery utilization, field operations, and harvest yield economics.
+          </p>
+          <div class="banner-quick-actions">
+            <button class="banner-btn" (click)="selectSection('farms')">
+              <i class="bi bi-plus-circle"></i> Register Farm
+            </button>
+            <button class="banner-btn" (click)="selectSection('operations')">
+              <i class="bi bi-play-circle"></i> Log Operation
+            </button>
+            <button class="banner-btn" (click)="selectSection('yields')">
+              <i class="bi bi-cash-stack"></i> Record Yield
+            </button>
+          </div>
+        </div>
+        <div class="banner-stat-box">
+          <div class="stat-box-label">ESTIMATED NET HARVEST MARGIN</div>
+          <div class="stat-box-val" [class.negative]="netOperatingMargin < 0">
+            ₹{{ netOperatingMargin | number }}
+          </div>
+          <div class="stat-box-sub">Revenue minus Operations & Maintenance costs</div>
+        </div>
+      </div>
+
+      <!-- 7 Domain Stat Cards (Distinct colors and styles) -->
+      <div class="stats-grid">
+        <!-- 1. Farms -->
+        <div class="kpi-card kpi-farm" (click)="selectSection('farms')">
+          <div class="kpi-header">
+            <div class="kpi-icon"><i class="bi bi-house-door-fill"></i></div>
+            <span class="kpi-badge">Holdings</span>
+          </div>
+          <div class="kpi-body">
+            <div class="kpi-value">{{ stats.farmsCount }}</div>
+            <div class="kpi-title">Farms Registered</div>
+            <div class="kpi-sub">Total active agricultural estates</div>
+          </div>
+          <div class="kpi-footer">
+            <span>Manage Farms</span>
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </div>
+
+        <!-- 2. Fields -->
+        <div class="kpi-card kpi-field" (click)="selectSection('fields')">
+          <div class="kpi-header">
+            <div class="kpi-icon"><i class="bi bi-grid-3x3-gap-fill"></i></div>
+            <span class="kpi-badge">Land Area</span>
+          </div>
+          <div class="kpi-body">
+            <div class="kpi-value">{{ stats.fieldsCount }} <small>({{ stats.totalAreaAcres }} ac)</small></div>
+            <div class="kpi-title">Fields Allocated</div>
+            <div class="kpi-sub">Parcels zoned across properties</div>
+          </div>
+          <div class="kpi-footer">
+            <span>View Fields</span>
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </div>
+
+        <!-- 3. Crop Plans -->
+        <div class="kpi-card kpi-crop" (click)="selectSection('crop-plans')">
+          <div class="kpi-header">
+            <div class="kpi-icon"><i class="bi bi-calendar2-check-fill"></i></div>
+            <span class="kpi-badge">Agronomy</span>
+          </div>
+          <div class="kpi-body">
+            <div class="kpi-value">{{ stats.cropsCount }}</div>
+            <div class="kpi-title">Crop Cycles</div>
+            <div class="kpi-sub">Sowing & harvest schedules</div>
+          </div>
+          <div class="kpi-footer">
+            <span>Review Plans</span>
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </div>
+
+        <!-- 4. Equipment -->
+        <div class="kpi-card kpi-equip" (click)="selectSection('equipment')">
+          <div class="kpi-header">
+            <div class="kpi-icon"><i class="bi bi-tools"></i></div>
+            <span class="kpi-badge">{{ stats.availableEquipmentCount }} Ready</span>
+          </div>
+          <div class="kpi-body">
+            <div class="kpi-value">{{ stats.equipmentCount }}</div>
+            <div class="kpi-title">Machinery Fleet</div>
+            <div class="kpi-sub">Tractors, harvesters & tools</div>
+          </div>
+          <div class="kpi-footer">
+            <span>Inspect Fleet</span>
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </div>
+
+        <!-- 5. Field Operations -->
+        <div class="kpi-card kpi-ops" (click)="selectSection('operations')">
+          <div class="kpi-header">
+            <div class="kpi-icon"><i class="bi bi-gear-wide-connected"></i></div>
+            <span class="kpi-badge">Activities</span>
+          </div>
+          <div class="kpi-body">
+            <div class="kpi-value">{{ stats.operationsCount }}</div>
+            <div class="kpi-title">Field Operations</div>
+            <div class="kpi-sub">Cost: ₹{{ stats.totalOperationCost | number }}</div>
+          </div>
+          <div class="kpi-footer">
+            <span>Log Activity</span>
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </div>
+
+        <!-- 6. Yields & Revenue -->
+        <div class="kpi-card kpi-yield" (click)="selectSection('yields')">
+          <div class="kpi-header">
+            <div class="kpi-icon"><i class="bi bi-graph-up-arrow"></i></div>
+            <span class="kpi-badge">Harvest</span>
+          </div>
+          <div class="kpi-body">
+            <div class="kpi-value">₹{{ stats.totalRevenue | number }}</div>
+            <div class="kpi-title">Recorded Revenue</div>
+            <div class="kpi-sub">{{ stats.yieldsCount }} produce batches sold</div>
+          </div>
+          <div class="kpi-footer">
+            <span>Harvest Records</span>
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </div>
+
+        <!-- 7. Maintenance -->
+        <div class="kpi-card kpi-maint" (click)="selectSection('maintenance')">
+          <div class="kpi-header">
+            <div class="kpi-icon"><i class="bi bi-wrench-adjustable"></i></div>
+            <span class="kpi-badge">Servicing</span>
+          </div>
+          <div class="kpi-body">
+            <div class="kpi-value">{{ stats.maintenanceCount }}</div>
+            <div class="kpi-title">Service Logs</div>
+            <div class="kpi-sub">Cost: ₹{{ stats.totalMaintenanceCost | number }}</div>
+          </div>
+          <div class="kpi-footer">
+            <span>Maintenance Log</span>
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 1. FARMS SECTION ── -->
+    <section
+      id="farms"
+      class="content-section section-farm"
+      *ngIf="viewMode === 'all' || activeSection === 'farms'">
+      <app-farm></app-farm>
+    </section>
+
+    <!-- ── 2. FIELDS SECTION ── -->
+    <section
+      id="fields"
+      class="content-section section-field"
+      *ngIf="viewMode === 'all' || activeSection === 'fields'">
+      <app-field></app-field>
+    </section>
+
+    <!-- ── 3. CROP PLANS SECTION ── -->
+    <section
+      id="crop-plans"
+      class="content-section section-crop-plan"
+      *ngIf="viewMode === 'all' || activeSection === 'crop-plans'">
+      <app-crop-plan></app-crop-plan>
+    </section>
+
+    <!-- ── 4. EQUIPMENT SECTION ── -->
+    <section
+      id="equipment"
+      class="content-section section-equipment"
+      *ngIf="viewMode === 'all' || activeSection === 'equipment'">
+      <app-equipment></app-equipment>
+    </section>
+
+    <!-- ── 5. FIELD OPERATIONS SECTION ── -->
+    <section
+      id="operations"
+      class="content-section section-operations"
+      *ngIf="viewMode === 'all' || activeSection === 'operations'">
+      <app-field-operation></app-field-operation>
+    </section>
+
+    <!-- ── 6. YIELD & REVENUE SECTION ── -->
+    <section
+      id="yields"
+      class="content-section section-yield"
+      *ngIf="viewMode === 'all' || activeSection === 'yields'">
+      <app-yield></app-yield>
+    </section>
+
+    <!-- ── 7. MAINTENANCE SECTION ── -->
+    <section
+      id="maintenance"
+      class="content-section section-maintenance"
+      *ngIf="viewMode === 'all' || activeSection === 'maintenance'">
+      <app-maintenance></app-maintenance>
+    </section>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-global-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <i class="bi bi-flower2 text-success"></i>
+        <span>Harvest<strong>Hub</strong> — Modern Agricultural Management</span>
+      </div>
+      <div class="footer-links">
+        <a href="#farms" (click)="selectSection('farms')">Farms</a>
+        <a href="#fields" (click)="selectSection('fields')">Fields</a>
+        <a href="#crop-plans" (click)="selectSection('crop-plans')">Crop Plans</a>
+        <a href="#equipment" (click)="selectSection('equipment')">Equipment</a>
+        <a href="#operations" (click)="selectSection('operations')">Operations</a>
+        <a href="#yields" (click)="selectSection('yields')">Yields</a>
+        <a href="#maintenance" (click)="selectSection('maintenance')">Maintenance</a>
+      </div>
+    </div>
+  </footer>
+
+</main>

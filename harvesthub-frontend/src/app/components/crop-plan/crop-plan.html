@@ -1,0 +1,193 @@
+<div class="section-header">
+  <div class="section-header-left">
+    <div class="section-icon"><i class="bi bi-calendar2-check-fill"></i></div>
+    <div>
+      <h2>Crop Planning</h2>
+      <p class="section-subtitle">Coordinate seasonal sowing schedules, crop varieties, and harvest windows</p>
+    </div>
+  </div>
+  <span class="section-count-badge">
+    <i class="bi bi-flower1"></i> {{ cropPlans.length }} Active {{ cropPlans.length === 1 ? 'Cycle' : 'Cycles' }}
+  </span>
+</div>
+
+<!-- Add Crop Plan -->
+<div class="hh-form-card">
+  <div class="hh-form-title">
+    <i class="bi bi-plus-circle-fill text-success"></i> Schedule New Crop Cycle
+  </div>
+  <form (ngSubmit)="addCropPlan()">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Target Field / Plot</label>
+        <select class="form-select" [(ngModel)]="newCropPlan.field" name="field" required>
+          <option [ngValue]="null" disabled>Select Field</option>
+          <option *ngFor="let field of fields" [ngValue]="field">
+            {{ field.name }} ({{ field.farm?.name }})
+          </option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Crop Name & Variety</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-seedling"></i></span>
+          <input
+            type="text"
+            class="form-control border-start-0"
+            [(ngModel)]="newCropPlan.cropName"
+            name="cropName"
+            placeholder="e.g. Basmati Rice, Sharbati Wheat"
+            required>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Agricultural Season</label>
+        <select class="form-select" [(ngModel)]="newCropPlan.season" name="season" required>
+          <option value="" disabled>Select Season</option>
+          <option value="Kharif">Kharif (Monsoon Cycle)</option>
+          <option value="Rabi">Rabi (Winter Cycle)</option>
+          <option value="Zaid">Zaid (Summer Cycle)</option>
+        </select>
+      </div>
+    </div>
+    <div class="row g-3 mt-1">
+      <div class="col-md-4">
+        <label class="form-label">Planned Sowing Date</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-calendar-event"></i></span>
+          <input
+            type="date"
+            class="form-control border-start-0"
+            [(ngModel)]="newCropPlan.sowingDate"
+            name="sowingDate"
+            required>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Expected Harvest Date</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-calendar-check"></i></span>
+          <input
+            type="date"
+            class="form-control border-start-0"
+            [(ngModel)]="newCropPlan.harvestDate"
+            name="harvestDate"
+            required>
+        </div>
+      </div>
+    </div>
+    <div class="mt-3">
+      <button type="submit" class="btn-hh-primary">
+        <i class="bi bi-plus-lg"></i> Confirm Crop Plan
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Edit Crop Plan -->
+<div class="hh-form-card" *ngIf="editingCropPlan" style="border-left: 4px solid var(--crop-primary); background: #f6fdfa;">
+  <div class="hh-form-title" style="color: var(--crop-primary);">
+    <i class="bi bi-pencil-square"></i> Edit Crop Plan #{{ editingCropPlan.planId }}
+  </div>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <label class="form-label">Field</label>
+      <select class="form-select" [(ngModel)]="editingCropPlan.field" name="editField">
+        <option *ngFor="let field of fields" [ngValue]="field">
+          {{ field.name }} ({{ field.farm?.name }})
+        </option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Crop Name</label>
+      <input type="text" class="form-control" [(ngModel)]="editingCropPlan.cropName">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Season</label>
+      <select class="form-select" [(ngModel)]="editingCropPlan.season">
+        <option value="Kharif">Kharif</option>
+        <option value="Rabi">Rabi</option>
+        <option value="Zaid">Zaid</option>
+      </select>
+    </div>
+  </div>
+  <div class="row g-3 mt-1">
+    <div class="col-md-4">
+      <label class="form-label">Sowing Date</label>
+      <input type="date" class="form-control" [(ngModel)]="editingCropPlan.sowingDate">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Harvest Date</label>
+      <input type="date" class="form-control" [(ngModel)]="editingCropPlan.harvestDate">
+    </div>
+  </div>
+  <div class="d-flex gap-2 mt-3">
+    <button class="btn-hh-primary" (click)="updateCropPlan()">
+      <i class="bi bi-check2"></i> Save Changes
+    </button>
+    <button class="btn-hh-secondary" (click)="cancelEdit()">
+      Cancel
+    </button>
+  </div>
+</div>
+
+<!-- Empty State -->
+<div *ngIf="cropPlans.length === 0" class="hh-empty">
+  <i class="bi bi-calendar2-check"></i>
+  <p>No crop cycles scheduled yet. Create your first sowing and harvesting schedule above.</p>
+</div>
+
+<!-- Crop Plans Grid -->
+<div class="hh-grid">
+  <div *ngFor="let cropPlan of cropPlans" class="hh-card">
+    <div>
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <div class="hh-card-title mb-0">
+          {{ cropPlan.cropName && cropPlan.cropName.trim() !== '' ? cropPlan.cropName : 'Crop Plan #' + cropPlan.planId }}
+        </div>
+        <span
+          class="hh-badge"
+          [ngClass]="{
+            'hh-badge-kharif': cropPlan.season === 'Kharif',
+            'hh-badge-rabi': cropPlan.season === 'Rabi',
+            'hh-badge-zaid': cropPlan.season === 'Zaid'
+          }">
+          {{ cropPlan.season }}
+        </span>
+      </div>
+
+      <div class="hh-card-meta">
+        <i class="bi bi-grid-3x3-gap text-success"></i>
+        <span>Field: <strong>{{ cropPlan.field?.name }}</strong></span>
+      </div>
+
+      <div class="hh-card-meta">
+        <i class="bi bi-house-door text-success"></i>
+        <span>Estate: {{ cropPlan.field?.farm?.name }}</span>
+      </div>
+
+      <div class="hh-card-meta">
+        <i class="bi bi-calendar-event text-success"></i>
+        <span>Sow: <strong>{{ cropPlan.sowingDate }}</strong></span>
+      </div>
+
+      <div class="hh-card-meta">
+        <i class="bi bi-calendar-check text-success"></i>
+        <span>Harvest: <strong>{{ cropPlan.harvestDate }}</strong></span>
+      </div>
+
+      <div class="hh-card-meta" style="color: var(--hh-text-subtle); font-family: var(--font-mono); font-size: 0.76rem;">
+        <i class="bi bi-fingerprint"></i> ID: HH-CRP-{{ cropPlan.planId }}
+      </div>
+    </div>
+
+    <div class="hh-card-actions">
+      <button class="btn-hh-edit" (click)="editCropPlan(cropPlan)">
+        <i class="bi bi-pencil"></i> Edit
+      </button>
+      <button class="btn-hh-danger" (click)="deleteCropPlan(cropPlan.planId)">
+        <i class="bi bi-trash3"></i> Delete
+      </button>
+    </div>
+  </div>
+</div>

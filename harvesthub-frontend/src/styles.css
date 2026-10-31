@@ -1,0 +1,535 @@
+/* Bootstrap 5 core utilities */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+/* ─── Modern Agrarian Design System ────────────────────────────── */
+:root {
+  /* Brand Primary: Deep Forest & Fresh Sprout */
+  --hh-brand-darkest: #0d2218;
+  --hh-brand-dark:    #163827;
+  --hh-brand-primary: #1f5138;
+  --hh-brand-accent:  #10b981;
+  --hh-brand-light:   #ecfdf5;
+
+  /* Section Palettes: Distinct colors per domain */
+  /* 1. Farm: Forest Emerald */
+  --farm-primary: #15803d;
+  --farm-light:   #f0fdf4;
+  --farm-border:  #86efac;
+  --farm-text:    #14532d;
+
+  /* 2. Field: Terracotta & Warm Ochre */
+  --field-primary: #b45309;
+  --field-light:   #fffbeb;
+  --field-border:  #fde68a;
+  --field-text:    #78350f;
+
+  /* 3. Crop Plans: Meadow & Botanical Green */
+  --crop-primary: #047857;
+  --crop-light:   #ecfdf5;
+  --crop-border:  #a7f3d0;
+  --crop-text:    #064e3b;
+
+  /* 4. Equipment: Industrial Cobalt & Steel */
+  --equip-primary: #0369a1;
+  --equip-light:   #f0f9ff;
+  --equip-border:  #bae6fd;
+  --equip-text:    #0c4a6e;
+
+  /* 5. Field Operations: Modern Amethyst / Violet */
+  --ops-primary: #6d28d9;
+  --ops-light:   #f5f3ff;
+  --ops-border:  #ddd6fe;
+  --ops-text:    #4c1d95;
+
+  /* 6. Yield & Revenue: Golden Harvest & Wheat */
+  --yield-primary: #c2410c;
+  --yield-light:   #fff7ed;
+  --yield-border:  #fed7aa;
+  --yield-text:    #7c2d12;
+
+  /* 7. Maintenance: Coral & Rose Safety */
+  --maint-primary: #be123c;
+  --maint-light:   #fff1f2;
+  --maint-border:  #fecdd3;
+  --maint-text:    #881337;
+
+  /* Neutral Slate Foundation */
+  --hh-bg:         #f7f9f6;
+  --hh-surface:    #ffffff;
+  --hh-surface-subtle: #f1f5f2;
+  --hh-text-main:  #1e293b;
+  --hh-text-muted: #64748b;
+  --hh-text-subtle:#94a3b8;
+  --hh-border:     #e2e8f0;
+  --hh-border-strong: #cbd5e1;
+
+  /* Custom Typography */
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-sans:  'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono:  'JetBrains Mono', SFMono-Regular, Consolas, monospace;
+
+  /* Layout & Geometry */
+  --sidebar-w: 260px;
+  --sidebar-collapsed-w: 72px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-pill: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -2px rgba(15, 23, 42, 0.03);
+  --shadow-lg: 0 12px 28px -6px rgba(15, 23, 42, 0.09), 0 4px 10px -2px rgba(15, 23, 42, 0.03);
+  --shadow-hover: 0 16px 32px -8px rgba(15, 23, 42, 0.12), 0 6px 12px -4px rgba(15, 23, 42, 0.05);
+}
+
+/* ─── Global Reset & Typography ─────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 110px;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--hh-bg);
+  color: var(--hh-text-main);
+  line-height: 1.55;
+  letter-spacing: -0.011em;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, .brand-font {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: #0f172a;
+}
+
+/* ─── Section Header (Non-Generic) ──────────────────────────────── */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--hh-border);
+}
+
+.section-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.section-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.section-header h2 {
+  font-size: 1.65rem;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.section-subtitle {
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  color: var(--hh-text-muted);
+  margin: 4px 0 0 0;
+  font-weight: 400;
+}
+
+.section-count-badge {
+  font-family: var(--font-sans);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* ─── Section Themes ────────────────────────────────────────────── */
+/* Farm Section */
+.section-farm .section-icon        { background: var(--farm-light); color: var(--farm-primary); border: 1px solid var(--farm-border); }
+.section-farm .section-count-badge { background: var(--farm-light); color: var(--farm-text); border: 1px solid var(--farm-border); }
+.section-farm .hh-card             { border-top: 3px solid var(--farm-primary); }
+.section-farm .btn-hh-primary      { background: var(--farm-primary); }
+.section-farm .btn-hh-primary:hover{ background: var(--farm-text); }
+
+/* Field Section */
+.section-field .section-icon        { background: var(--field-light); color: var(--field-primary); border: 1px solid var(--field-border); }
+.section-field .section-count-badge { background: var(--field-light); color: var(--field-text); border: 1px solid var(--field-border); }
+.section-field .hh-card             { border-top: 3px solid var(--field-primary); }
+.section-field .btn-hh-primary      { background: var(--field-primary); }
+.section-field .btn-hh-primary:hover{ background: var(--field-text); }
+
+/* Crop Plan Section */
+.section-crop-plan .section-icon        { background: var(--crop-light); color: var(--crop-primary); border: 1px solid var(--crop-border); }
+.section-crop-plan .section-count-badge { background: var(--crop-light); color: var(--crop-text); border: 1px solid var(--crop-border); }
+.section-crop-plan .hh-card             { border-top: 3px solid var(--crop-primary); }
+.section-crop-plan .btn-hh-primary      { background: var(--crop-primary); }
+.section-crop-plan .btn-hh-primary:hover{ background: var(--crop-text); }
+
+/* Equipment Section */
+.section-equipment .section-icon        { background: var(--equip-light); color: var(--equip-primary); border: 1px solid var(--equip-border); }
+.section-equipment .section-count-badge { background: var(--equip-light); color: var(--equip-text); border: 1px solid var(--equip-border); }
+.section-equipment .hh-card             { border-top: 3px solid var(--equip-primary); }
+.section-equipment .btn-hh-primary      { background: var(--equip-primary); }
+.section-equipment .btn-hh-primary:hover{ background: var(--equip-text); }
+
+/* Field Operations Section */
+.section-operations .section-icon        { background: var(--ops-light); color: var(--ops-primary); border: 1px solid var(--ops-border); }
+.section-operations .section-count-badge { background: var(--ops-light); color: var(--ops-text); border: 1px solid var(--ops-border); }
+.section-operations .hh-card             { border-top: 3px solid var(--ops-primary); }
+.section-operations .btn-hh-primary      { background: var(--ops-primary); }
+.section-operations .btn-hh-primary:hover{ background: var(--ops-text); }
+
+/* Yield Section */
+.section-yield .section-icon        { background: var(--yield-light); color: var(--yield-primary); border: 1px solid var(--yield-border); }
+.section-yield .section-count-badge { background: var(--yield-light); color: var(--yield-text); border: 1px solid var(--yield-border); }
+.section-yield .hh-card             { border-top: 3px solid var(--yield-primary); }
+.section-yield .btn-hh-primary      { background: var(--yield-primary); }
+.section-yield .btn-hh-primary:hover{ background: var(--yield-text); }
+
+/* Maintenance Section */
+.section-maintenance .section-icon        { background: var(--maint-light); color: var(--maint-primary); border: 1px solid var(--maint-border); }
+.section-maintenance .section-count-badge { background: var(--maint-light); color: var(--maint-text); border: 1px solid var(--maint-border); }
+.section-maintenance .hh-card             { border-top: 3px solid var(--maint-primary); }
+.section-maintenance .btn-hh-primary      { background: var(--maint-primary); }
+.section-maintenance .btn-hh-primary:hover{ background: var(--maint-text); }
+
+/* ─── Forms System (Modernized & Compact) ───────────────────────── */
+.hh-form-card {
+  background: var(--hh-surface);
+  border: 1px solid var(--hh-border);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease;
+}
+
+.hh-form-card:focus-within {
+  box-shadow: var(--shadow-md);
+  border-color: var(--hh-border-strong);
+}
+
+.hh-form-title {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.98rem;
+  color: var(--hh-text-main);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: -0.01em;
+}
+
+.form-label {
+  font-family: var(--font-sans);
+  font-size: 0.81rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 5px;
+  letter-spacing: 0.01em;
+}
+
+.form-control, .form-select {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  padding: 9px 13px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--hh-border);
+  color: var(--hh-text-main);
+  background-color: #fafbfc;
+  transition: all 0.15s ease-in-out;
+}
+
+.form-control:focus, .form-select:focus {
+  background-color: #ffffff;
+  border-color: var(--hh-brand-primary);
+  box-shadow: 0 0 0 3px rgba(31, 81, 56, 0.12);
+  outline: none;
+}
+
+.form-control::placeholder {
+  color: var(--hh-text-subtle);
+  font-size: 0.84rem;
+}
+
+/* ─── Data Grid & Cards ─────────────────────────────────────────── */
+.hh-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 20px;
+}
+
+.hh-card {
+  background: var(--hh-surface);
+  border: 1px solid var(--hh-border);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease, border-color 0.18s ease;
+  position: relative;
+}
+
+.hh-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--hh-border-strong);
+}
+
+.hh-card-title {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1.08rem;
+  color: #0f172a;
+  letter-spacing: -0.015em;
+  margin-bottom: 10px;
+  line-height: 1.35;
+}
+
+.hh-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  color: var(--hh-text-muted);
+  margin-bottom: 7px;
+  font-weight: 400;
+}
+
+.hh-card-meta i {
+  font-size: 0.95rem;
+  opacity: 0.8;
+  width: 16px;
+  text-align: center;
+}
+
+.hh-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--hh-surface-subtle);
+}
+
+/* ─── Button Styles (Non-Generic) ───────────────────────────────── */
+.btn-hh-primary {
+  background: var(--hh-brand-primary);
+  color: #ffffff;
+  border: none;
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.84rem;
+  letter-spacing: 0.01em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.btn-hh-primary:hover {
+  background: var(--hh-brand-dark);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(22, 56, 39, 0.25);
+}
+
+.btn-hh-secondary {
+  background: transparent;
+  color: var(--hh-text-muted);
+  border: 1.5px solid var(--hh-border);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.84rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-hh-secondary:hover {
+  background: var(--hh-surface-subtle);
+  color: var(--hh-text-main);
+  border-color: var(--hh-border-strong);
+}
+
+.btn-hh-edit {
+  background: #f0f9ff;
+  color: #0284c7;
+  border: 1px solid #bae6fd;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.78rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-hh-edit:hover {
+  background: #e0f2fe;
+  color: #0369a1;
+  border-color: #7dd3fc;
+}
+
+.btn-hh-danger {
+  background: #fff1f2;
+  color: #e11d48;
+  border: 1px solid #fecdd3;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.78rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-hh-danger:hover {
+  background: #ffe4e6;
+  color: #be123c;
+  border-color: #fda4af;
+}
+
+/* ─── Status & Category Badges ──────────────────────────────────── */
+.hh-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.hh-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.hh-badge-available {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+.hh-badge-available::before { background: #10b981; }
+
+.hh-badge-in-use {
+  background: #f0f9ff;
+  color: #075985;
+  border: 1px solid #bae6fd;
+}
+.hh-badge-in-use::before { background: #0ea5e9; }
+
+.hh-badge-maintenance {
+  background: #fffbeb;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+.hh-badge-maintenance::before { background: #f59e0b; }
+
+.hh-badge-retired {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+.hh-badge-retired::before { background: #94a3b8; }
+
+/* Season badges */
+.hh-badge-kharif {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+.hh-badge-kharif::before { background: #10b981; }
+
+.hh-badge-rabi {
+  background: #fffbeb;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+.hh-badge-rabi::before { background: #f59e0b; }
+
+.hh-badge-zaid {
+  background: #f0f9ff;
+  color: #075985;
+  border: 1px solid #bae6fd;
+}
+.hh-badge-zaid::before { background: #0ea5e9; }
+
+/* ─── Empty State ───────────────────────────────────────────────── */
+.hh-empty {
+  text-align: center;
+  padding: 44px 20px;
+  background: var(--hh-surface);
+  border: 1.5px dashed var(--hh-border-strong);
+  border-radius: var(--radius-lg);
+  color: var(--hh-text-muted);
+}
+
+.hh-empty i {
+  font-size: 2.2rem;
+  color: var(--hh-text-subtle);
+  display: block;
+  margin-bottom: 10px;
+}
+
+.hh-empty p {
+  font-size: 0.92rem;
+  margin: 0;
+}
+
+/* ─── Custom Scrollbar ──────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--hh-border-strong);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--hh-text-subtle);
+}
